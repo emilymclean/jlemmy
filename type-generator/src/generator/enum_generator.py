@@ -9,7 +9,7 @@ class EnumGenerator:
     _indent_char = "\t"
     _header = f"""
 // This class was generated on {datetime.now(timezone.utc)}, do not modify it directly
-package cl.emilym.jlemmy.model
+package cl.emilym.jlemmy.model;
         """
 
     _enum_name: str

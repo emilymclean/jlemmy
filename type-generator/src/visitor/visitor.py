@@ -10,9 +10,6 @@ class Visitor(ABC):
 
     tree: Tree
 
-    def __init__(self, tree: Tree):
-        self.tree = tree
-
     def build(self) -> str:
         self._accept(self.tree.root_node)
         return self._generate()

@@ -1,7 +1,7 @@
 import textwrap
 from typing import List
 
-from tree_sitter import Node
+from tree_sitter import Node, Tree
 from ..models import Property
 from ..util import to_lower_camel_case, to_camel_case
 from ..generator.model_generator import ModelGenerator
@@ -12,14 +12,19 @@ class ModelVisitor(Visitor):
     _encoding = "utf-8"
     _number_type = "long"
 
-    _class_name = ""
+    class_name = ""
     _properties: List[Property] = []
 
+    def __init__(self, tree: Tree):
+        self.tree = tree
+        self.class_name = ""
+        self._properties = []
+
     def _generate(self) -> str:
-        return ModelGenerator(self._class_name, self._properties).build()
+        return ModelGenerator(self.class_name, self._properties).build()
 
     def visit_interface_declaration(self, node: Node):
-        self._class_name = node.child_by_field_name("name").text.decode(self._encoding)
+        self.class_name = node.child_by_field_name("name").text.decode(self._encoding)
         self._accept_list(node.children)
 
     def visit_property_signature(self, node: Node):

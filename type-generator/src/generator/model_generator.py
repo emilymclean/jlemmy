@@ -9,7 +9,7 @@ class ModelGenerator:
     _indent_char = "\t"
     _header = f"""
 // This class was generated on {datetime.now(timezone.utc)}, do not modify it directly
-package cl.emilym.jlemmy.model
+package cl.emilym.jlemmy.model;
         """
 
     _class_name: str
@@ -50,7 +50,7 @@ public {self._class_name}({", ".join([f"{prop.type} {prop.java_name}" for prop i
             """.strip()
 
     def _generate_constructor_assignments(self) -> str:
-        return "\n".join([f"this.{prop.java_name} = {prop.java_name}" for prop in self._properties])
+        return "\n".join([f"this.{prop.java_name} = {prop.java_name};" for prop in self._properties])
 
     def _generate_get_and_sets(self) -> str:
         return "\n\n".join([f"""
