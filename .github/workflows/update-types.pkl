@@ -35,7 +35,7 @@ jobs = new Mapping {
             new CommandStep {
                 name = "Install dependencies"
                 run = """
-                pip install -r requirements.txt
+                pip install -r type-generator/requirements.txt
                 """
             }
             new CommandStep {
