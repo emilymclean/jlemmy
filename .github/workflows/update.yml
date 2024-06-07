@@ -17,7 +17,9 @@ jobs:
         fetch-depth: 0
         submodules: true
     - name: Update submodules
-      run: git submodule update --remote --recursive type-generator/lemmy-js-client
+      run: |-
+        git pull --recurse-submodules
+        git submodule update --remote --recursive type-generator/lemmy-js-client
     - name: Setup python
       uses: actions/setup-python@v3
       with:
