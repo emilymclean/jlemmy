@@ -17,7 +17,12 @@ permissions = new Mapping {
 jobs = new Mapping {
     ["update-types"] = new Job {
         steps = new Listing {
-            common.checkout
+            (common.checkout) {
+                with = new Mapping {
+                    ["fetch-depth"] = 0
+                    ["submodules"] = true
+                }
+            }
             new CommandStep {
                 name = "Update submodules"
                 run = """
