@@ -1,0 +1,62 @@
+extends "pkl/src/base.pkl"
+import "pkl/src/common.pkl"
+
+name = "Update"
+
+on = new On {
+    schedule = new Schedule {
+        cron = "* * * * Sun"
+    }
+    workflow_dispatch = new WorkflowDispatch {}
+}
+
+permissions = new Mapping {
+    ["contents"] = "write"
+}
+
+jobs = new Mapping {
+    ["update-types"] = new Job {
+        steps = new Listing {
+            common.checkout
+            new CommandStep {
+                name = "Update submodules"
+                run = """
+                git pull --recurse-submodules
+                git submodule update --remote --recursive type-generator/lemmy-js-client
+                """
+            }
+            new ActionStep {
+                name = "Setup python"
+                uses = "actions/setup-python@v3"
+                with = new Mapping {
+                    ["python-version"] = "3.11"
+                }
+            }
+            new CommandStep {
+                name = "Install dependencies"
+                run = """
+                pip install -r requirements.txt
+                """
+            }
+            new CommandStep {
+                name = "Build new types"
+                run = """
+                python type-generator/main.py
+                """
+            }
+            new CommandStep {
+                id = "date"
+                name = "Get current date"
+                run = "echo \"::set-output name=date::$(date +'%Y%m%d-%s')\""
+            }
+            new ActionStep {
+                name = "Create pull request"
+                uses = "peter-evans/create-pull-request@v6"
+                with = new Mapping {
+                    ["branch"] = "update-types/feature/update-types-${{ steps.date.outputs.date }}"
+                    ["name"] = "Update types from source"
+                }
+            }
+        }
+    }
+}.toMap().filter((k,v) -> v != null).toMapping()
