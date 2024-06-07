@@ -56,7 +56,6 @@ class HttpVisitor(Visitor):
         name = node.child_by_field_name("name").text.decode(self._encoding)
         if name in [
             "constructor",
-            "getSite",
             "#buildFullUrl",
             "#wrapper",
             "#fetchFunction",
@@ -79,7 +78,7 @@ class HttpVisitor(Visitor):
         self._current_output = normalize_type(node.children[3].text.decode(self._encoding))
 
     def visit_arguments(self, node: Node):
-        if node.child_count != 8:
+        if self._current_name is None:
             return
 
         ts_http_method = node.children[1].text.decode(self._encoding)

@@ -7,8 +7,14 @@ import retrofit2.http.*;
 import java.util.List;
         
 public interface LemmyApi {
+	@GET("/site")
+	Call<GetSiteResponse> getSite();
+
 	@POST("/site")
 	Call<SiteResponse> createSite(CreateSite request);
+
+	@PUT("/site")
+	Call<SiteResponse> editSite(EditSite request);
 
 	@POST("/user/leave_admin")
 	Call<GetSiteResponse> leaveAdmin();
@@ -39,6 +45,9 @@ public interface LemmyApi {
 
 	@GET("/modlog")
 	Call<GetModlogResponse> getModlog(GetModlog request);
+
+	@GET("/search")
+	Call<SearchResponse> search(Search request);
 
 	@GET("/resolve_object")
 	Call<ResolveObjectResponse> resolveObject(ResolveObject request);
@@ -81,6 +90,12 @@ public interface LemmyApi {
 
 	@POST("/post")
 	Call<PostResponse> createPost(CreatePost request);
+
+	@GET("/post")
+	Call<GetPostResponse> getPost(GetPost request);
+
+	@PUT("/post")
+	Call<PostResponse> editPost(EditPost request);
 
 	@POST("/post/delete")
 	Call<PostResponse> deletePost(DeletePost request);
@@ -181,6 +196,15 @@ public interface LemmyApi {
 	@POST("/private_message/mark_as_read")
 	Call<PrivateMessageResponse> markPrivateMessageAsRead(MarkPrivateMessageAsRead request);
 
+	@POST("/private_message/report")
+	Call<PrivateMessageReportResponse> createPrivateMessageReport(CreatePrivateMessageReport request);
+
+	@PUT("/private_message/report/resolve")
+	Call<PrivateMessageReportResponse> resolvePrivateMessageReport(ResolvePrivateMessageReport request);
+
+	@GET("/private_message/report/list")
+	Call<ListPrivateMessageReportsResponse> listPrivateMessageReports(ListPrivateMessageReports request);
+
 	@POST("/user/register")
 	Call<LoginResponse> register(Register request);
 
@@ -246,6 +270,12 @@ public interface LemmyApi {
 
 	@GET("/admin/registration_application/count")
 	Call<GetUnreadRegistrationApplicationCountResponse> getUnreadRegistrationApplicationCount();
+
+	@GET("/admin/registration_application/list")
+	Call<ListRegistrationApplicationsResponse> listRegistrationApplications(ListRegistrationApplications request);
+
+	@PUT("/admin/registration_application/approve")
+	Call<RegistrationApplicationResponse> approveRegistrationApplication(ApproveRegistrationApplication request);
 
 	@POST("/admin/purge/person")
 	Call<SuccessResponse> purgePerson(PurgePerson request);

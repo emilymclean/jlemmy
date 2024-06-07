@@ -1,5 +1,4 @@
 import textwrap
-from datetime import datetime, timezone
 from typing import List
 
 from ..models import Property, ApiMethod, HttpMethod

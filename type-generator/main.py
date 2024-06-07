@@ -27,7 +27,6 @@ def generate_types():
 
 def parse_model(model_contents: str) -> Optional[Tuple[str, str]]:
     tree = parser.parse(bytes(model_contents, "utf-8"))
-    print(tree.root_node.sexp())
     if "export type" in model_contents:
         visitor = EnumVisitor(tree)
         result = visitor.build()
