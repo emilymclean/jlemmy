@@ -1,0 +1,56 @@
+extends "pkl/src/base.pkl"
+import "pkl/src/common.pkl"
+
+name = "Update"
+
+on = new On {
+    schedule = new Schedule {
+        cron = "* * * * 7"
+    }
+}
+
+permissions = new Mapping {
+    ["contents"] = "write"
+}
+
+jobs = new Mapping {
+    ["update-types"] = new Job {
+        common.checkout
+        new CommandStep {
+            name = "Update submodules"
+            run = """
+            git pull --recurse-submodules
+            git submodule update --remote --recursive type-generator/lemmy-js-client
+            """
+        }
+    }
+    ["version"] = new Job {
+        outputs = new Mapping {
+            ["version"] = "${{ steps.gitversion.outputs.semVer }}"
+            ["versionCode"] = "${{ steps.run_number.outputs.versionCode }}"
+        }
+        steps = new Listing {
+            common.checkout
+            new ActionStep {
+                name = "Install GitVersion"
+                uses = "gittools/actions/gitversion/setup@v0.9.6"
+                with = new Mapping {
+                    ["versionSpec"] = "5.x"
+                }
+            }
+            new ActionStep {
+                name = "Use GitVersion"
+                id = "gitversion"
+                uses = "gittools/actions/gitversion/execute@v0.9.6"
+                with = new Mapping {
+                    ["useConfigFile"] = true
+                    ["configFilePath"] = "./gitversion.yml"
+                }
+            }
+            new CommandStep {
+                name = "Display SemVer"
+                run = "echo \"SemVer: ${{ steps.gitversion.outputs.semVer }}\""
+            }
+        }
+    }
+}.toMap().filter((k,v) -> v != null).toMapping()

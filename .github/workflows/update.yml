@@ -1,0 +1,28 @@
+name: Update
+'on':
+  schedule:
+    - cron: '* * * * 7'
+permissions:
+  contents: write
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.gitversion.outputs.semVer }}
+      versionCode: ${{ steps.run_number.outputs.versionCode }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.6
+      with:
+        versionSpec: 5.x
+    - id: gitversion
+      name: Use GitVersion
+      uses: gittools/actions/gitversion/execute@v0.9.6
+      with:
+        useConfigFile: true
+        configFilePath: ./gitversion.yml
+    - name: Display SemVer
+      run: 'echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"'
