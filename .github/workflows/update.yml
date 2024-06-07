@@ -35,4 +35,4 @@ jobs:
       uses: peter-evans/create-pull-request@v6
       with:
         branch: update-types/feature/update-types-${{ steps.date.outputs.date }}
-        name: Update types from source
+        title: Update types from source

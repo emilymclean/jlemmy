@@ -65,7 +65,7 @@ jobs = new Mapping {
                 uses = "peter-evans/create-pull-request@v6"
                 with = new Mapping {
                     ["branch"] = "update-types/feature/update-types-${{ steps.date.outputs.date }}"
-                    ["name"] = "Update types from source"
+                    ["title"] = "Update types from source"
                 }
             }
         }
