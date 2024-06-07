@@ -4,8 +4,10 @@ import "pkl/src/common.pkl"
 name = "Update"
 
 on = new On {
-    schedule = new Schedule {
-        cron = "* * * * Sun"
+    schedule = new Listing {
+        new Schedule {
+            cron = "* * * * Sun"
+        }
     }
     workflow_dispatch = new WorkflowDispatch {}
 }
@@ -16,8 +18,17 @@ permissions = new Mapping {
 
 jobs = new Mapping {
     ["update-types"] = new Job {
+        permissions = new Mapping {
+            ["contents"] = "write"
+            ["pull-requests"] = "write"
+        }
         steps = new Listing {
-            common.checkout
+            (common.checkout) {
+                with = new Mapping {
+                    ["fetch-depth"] = 0
+                    ["submodules"] = true
+                }
+            }
             new CommandStep {
                 name = "Update submodules"
                 run = """
@@ -35,13 +46,13 @@ jobs = new Mapping {
             new CommandStep {
                 name = "Install dependencies"
                 run = """
-                pip install -r requirements.txt
+                pip install -r type-generator/requirements.txt
                 """
             }
             new CommandStep {
                 name = "Build new types"
                 run = """
-                python type-generator/main.py
+                cd type-generator && python main.py
                 """
             }
             new CommandStep {
@@ -54,7 +65,7 @@ jobs = new Mapping {
                 uses = "peter-evans/create-pull-request@v6"
                 with = new Mapping {
                     ["branch"] = "update-types/feature/update-types-${{ steps.date.outputs.date }}"
-                    ["name"] = "Update types from source"
+                    ["title"] = "Update types from source"
                 }
             }
         }

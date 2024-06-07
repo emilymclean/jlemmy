@@ -180,10 +180,6 @@ public enum LemmyErrorType {
 	INVALID_VOTE_VALUE,
 	@SerializedName("page_does_not_specify_creator")
 	PAGE_DOES_NOT_SPECIFY_CREATOR,
-	@SerializedName("page_does_not_specify_group")
-	PAGE_DOES_NOT_SPECIFY_GROUP,
-	@SerializedName("no_community_found_in_cc")
-	NO_COMMUNITY_FOUND_IN_CC,
 	@SerializedName("no_email_setup")
 	NO_EMAIL_SETUP,
 	@SerializedName("local_site_not_setup")
@@ -308,8 +304,6 @@ public enum LemmyErrorType {
 	INVALID_REGEX,
 	@SerializedName("captcha_incorrect")
 	CAPTCHA_INCORRECT,
-	@SerializedName("password_reset_limit_reached")
-	PASSWORD_RESET_LIMIT_REACHED,
 	@SerializedName("couldnt_create_audio_captcha")
 	COULDNT_CREATE_AUDIO_CAPTCHA,
 	@SerializedName("invalid_url_scheme")
@@ -332,6 +326,10 @@ public enum LemmyErrorType {
 	INVALID_BOT_ACTION,
 	@SerializedName("cant_block_local_instance")
 	CANT_BLOCK_LOCAL_INSTANCE,
+	@SerializedName("url_without_domain")
+	URL_WITHOUT_DOMAIN,
+	@SerializedName("inbox_timeout")
+	INBOX_TIMEOUT,
 	@SerializedName("unknown")
 	UNKNOWN
 }

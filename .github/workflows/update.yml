@@ -1,17 +1,21 @@
 name: Update
 'on':
   schedule:
-    - cron: '* * * * Sun'
+  - cron: '* * * * Sun'
   workflow_dispatch: {}
 permissions:
   contents: write
 jobs:
   update-types:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
+        submodules: true
     - name: Update submodules
       run: |-
         git pull --recurse-submodules
@@ -21,9 +25,9 @@ jobs:
       with:
         python-version: '3.11'
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: pip install -r type-generator/requirements.txt
     - name: Build new types
-      run: python type-generator/main.py
+      run: cd type-generator && python main.py
     - id: date
       name: Get current date
       run: echo "::set-output name=date::$(date +'%Y%m%d-%s')"
@@ -31,4 +35,4 @@ jobs:
       uses: peter-evans/create-pull-request@v6
       with:
         branch: update-types/feature/update-types-${{ steps.date.outputs.date }}
-        name: Update types from source
+        title: Update types from source
