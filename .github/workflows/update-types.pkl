@@ -5,7 +5,7 @@ name = "Update"
 
 on = new On {
     schedule = new Schedule {
-        cron = "* * * * 7"
+        cron = "* * * * Sun"
     }
     workflow_dispatch = new WorkflowDispatch {}
 }
