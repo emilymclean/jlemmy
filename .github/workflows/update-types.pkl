@@ -32,7 +32,6 @@ jobs = new Mapping {
             new CommandStep {
                 name = "Update submodules"
                 run = """
-                git pull --recurse-submodules
                 git submodule update --remote --recursive type-generator/lemmy-js-client
                 """
             }
