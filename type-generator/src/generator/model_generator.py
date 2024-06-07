@@ -10,6 +10,8 @@ class ModelGenerator:
     _header = f"""
 // This class was generated on {datetime.now(timezone.utc)}, do not modify it directly
 package cl.emilym.jlemmy.model;
+
+import com.google.gson.annotations.SerializedName;
         """
 
     _class_name: str

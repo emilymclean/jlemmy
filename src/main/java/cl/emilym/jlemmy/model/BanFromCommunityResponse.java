@@ -1,5 +1,7 @@
-// This class was generated on 2024-05-10 10:12:35.912846+00:00, do not modify it directly
+// This class was generated on 2024-06-07 10:43:43.211794+00:00, do not modify it directly
 package cl.emilym.jlemmy.model;
+
+import com.google.gson.annotations.SerializedName;
         
 public class BanFromCommunityResponse {
 	@SerializedName("person_view")
