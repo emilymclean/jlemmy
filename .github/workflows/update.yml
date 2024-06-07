@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: pip install -r type-generator/requirements.txt
     - name: Build new types
-      run: python type-generator/main.py
+      run: cd type-generator && python main.py
     - id: date
       name: Get current date
       run: echo "::set-output name=date::$(date +'%Y%m%d-%s')"

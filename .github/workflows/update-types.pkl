@@ -41,7 +41,7 @@ jobs = new Mapping {
             new CommandStep {
                 name = "Build new types"
                 run = """
-                python type-generator/main.py
+                cd type-generator && python main.py
                 """
             }
             new CommandStep {
