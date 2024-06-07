@@ -1,12 +1,15 @@
 name: Update
 'on':
   schedule:
-    - cron: '* * * * Sun'
+  - cron: '* * * * Sun'
   workflow_dispatch: {}
 permissions:
   contents: write
 jobs:
   update-types:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
