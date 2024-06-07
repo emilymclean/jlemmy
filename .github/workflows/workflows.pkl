@@ -4,7 +4,6 @@ workflows = new Listing {
     (import("pkl/build.pkl")) {
         projectName = "jlemmy"
     }
-    import("pkl/lint.pkl")
     import("pkl/test.pkl")
     import("update-types.pkl")
 }
