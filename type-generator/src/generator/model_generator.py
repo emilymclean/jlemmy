@@ -8,7 +8,7 @@ from ..models import Property
 class ModelGenerator:
     _indent_char = "\t"
     _header = f"""
-// This class was generated on {datetime.now(timezone.utc)}, do not modify it directly
+// This class was generated, do not modify it directly
 package cl.emilym.jlemmy.model;
 
 import com.google.gson.annotations.SerializedName;

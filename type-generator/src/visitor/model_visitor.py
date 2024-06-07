@@ -3,7 +3,7 @@ from typing import List
 
 from tree_sitter import Node, Tree
 from ..models import Property
-from ..util import to_lower_camel_case, to_camel_case
+from ..util import to_lower_camel_case, to_camel_case, normalize_type
 from ..generator.model_generator import ModelGenerator
 from .visitor import Visitor
 
@@ -45,12 +45,12 @@ class ModelVisitor(Visitor):
 
         last_idx = len(self._properties) - 1
 
-        self._properties[last_idx].type = self._normalize_type(type_identifier)
+        self._properties[last_idx].type = normalize_type(type_identifier)
 
     def visit_generic_type(self, node: Node):
         last_idx = len(self._properties) - 1
         type_identifier = node.child(0).text.decode(self._encoding)
-        type_parameter = self._normalize_type(node.child(1).child(1).text.decode(self._encoding))
+        type_parameter = normalize_type(node.child(1).child(1).text.decode(self._encoding))
 
         if type_identifier == "Array":
             out_type = f"{type_parameter}[]"
@@ -58,13 +58,3 @@ class ModelVisitor(Visitor):
             raise f"Unhandled Type {type_identifier}!"
 
         self._properties[last_idx].type = out_type
-
-    def _normalize_type(self, type_identifier: str) -> str:
-        if type_identifier.endswith("Id"):
-            return self._number_type
-        elif type_identifier == "number":
-            return self._number_type
-        elif type_identifier == "string":
-            return "String"
-
-        return type_identifier
