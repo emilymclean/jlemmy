@@ -7,6 +7,7 @@ on = new On {
     schedule = new Schedule {
         cron = "* * * * 7"
     }
+    workflow_dispatch = new WorkflowDispatch {}
 }
 
 permissions = new Mapping {
@@ -15,41 +16,46 @@ permissions = new Mapping {
 
 jobs = new Mapping {
     ["update-types"] = new Job {
-        common.checkout
-        new CommandStep {
-            name = "Update submodules"
-            run = """
-            git pull --recurse-submodules
-            git submodule update --remote --recursive type-generator/lemmy-js-client
-            """
-        }
-    }
-    ["version"] = new Job {
-        outputs = new Mapping {
-            ["version"] = "${{ steps.gitversion.outputs.semVer }}"
-            ["versionCode"] = "${{ steps.run_number.outputs.versionCode }}"
-        }
         steps = new Listing {
             common.checkout
-            new ActionStep {
-                name = "Install GitVersion"
-                uses = "gittools/actions/gitversion/setup@v0.9.6"
-                with = new Mapping {
-                    ["versionSpec"] = "5.x"
-                }
+            new CommandStep {
+                name = "Update submodules"
+                run = """
+                git pull --recurse-submodules
+                git submodule update --remote --recursive type-generator/lemmy-js-client
+                """
             }
             new ActionStep {
-                name = "Use GitVersion"
-                id = "gitversion"
-                uses = "gittools/actions/gitversion/execute@v0.9.6"
+                name = "Setup python"
+                uses = "actions/setup-python@v3"
                 with = new Mapping {
-                    ["useConfigFile"] = true
-                    ["configFilePath"] = "./gitversion.yml"
+                    ["python-version"] = "3.11"
                 }
             }
             new CommandStep {
-                name = "Display SemVer"
-                run = "echo \"SemVer: ${{ steps.gitversion.outputs.semVer }}\""
+                name = "Install dependencies"
+                run = """
+                pip install -r requirements.txt
+                """
+            }
+            new CommandStep {
+                name = "Build new types"
+                run = """
+                python type-generator/main.py
+                """
+            }
+            new CommandStep {
+                id = "date"
+                name = "Get current date"
+                run = "echo \"::set-output name=date::$(date +'%Y%m%d-%s')\""
+            }
+            new ActionStep {
+                name = "Create pull request"
+                uses = "peter-evans/create-pull-request@v6"
+                with = new Mapping {
+                    ["branch"] = "update-types/feature/update-types-${{ steps.date.outputs.date }}"
+                    ["name"] = "Update types from source"
+                }
             }
         }
     }
