@@ -144,7 +144,7 @@ jobs:
         submodules: true
     - id: version
       run: |-
-        regex = "\"version\": \"(.+)\","
+        regex="\"version\": \"(.+)\","
         (cat ./type-generator/lemmy-js-client/package.json) =~ $regex
         echo ${BASH_REMATCH[1]}
         lemmyVersion=${BASH_REMATCH[1]} >> $GITHUB_ENV
