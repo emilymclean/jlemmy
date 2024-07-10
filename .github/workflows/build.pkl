@@ -4,7 +4,7 @@ import "pkl/src/common.pkl" as common
 projectName = "jlemmy"
 
 local b = (import("pkl/build.pkl")) {
-    projectName = ""
+    projectName = "jlemmy"
 }
 
 jobs = (b.jobs) {
@@ -22,8 +22,8 @@ jobs = (b.jobs) {
             new CommandStep {
                 id = "version"
                 run = """
-                regex='"version": "((\\d+\\.){2}(\\d+)(-\\w+\\d)?)",'
-                contents="$(cat ./type-generator/lemmy-js-client/package.json)"
+                regex='"version": "(.*)",'
+                contents="$(cat ./type-generator/lemmy-js-client/package.json | grep "version")"
                 if [[ $contents =~ $regex ]]
                 then
                     echo ${BASH_REMATCH[1]}

@@ -55,11 +55,11 @@ jobs:
       with:
         arguments: build
     - name: Rename AAR
-      run: mv ./build/libs/-${{ needs.version.outputs.version }}.jar ./.jar
+      run: mv ./build/libs/jlemmy-${{ needs.version.outputs.version }}.jar ./jlemmy.jar
     - uses: actions/upload-artifact@master
       with:
-        name: -jar
-        path: ./.jar
+        name: jlemmy-jar
+        path: ./jlemmy.jar
   release:
     permissions:
       contents: write
@@ -91,7 +91,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@master
       with:
-        name: -jar
+        name: jlemmy-jar
         path: ./
     - name: Upload Artifact to Release
       env:
@@ -99,8 +99,8 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ needs.release.outputs.upload_url }}
-        asset_path: ./.jar
-        asset_name: -v${{ needs.version.outputs.version }}.jar
+        asset_path: ./jlemmy.jar
+        asset_name: jlemmy-v${{ needs.version.outputs.version }}.jar
         asset_content_type: application/zip
   publish-sonatype:
     permissions:
@@ -144,8 +144,8 @@ jobs:
         submodules: true
     - id: version
       run: |-
-        regex='"version": "((\d+\.){2}(\d+)(-\w+\d)?)",'
-        contents="$(cat ./type-generator/lemmy-js-client/package.json)"
+        regex='"version": "(.*)",'
+        contents="$(cat ./type-generator/lemmy-js-client/package.json | grep "version")"
         if [[ $contents =~ $regex ]]
         then
             echo ${BASH_REMATCH[1]}
