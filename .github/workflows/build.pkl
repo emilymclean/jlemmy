@@ -22,7 +22,7 @@ jobs = (b.jobs) {
             new CommandStep {
                 id = "version"
                 run = """
-                regex="\\"version\\": \\"(.+)\\","
+                regex='"version": "(.+)",'
                 contents="$(cat ./type-generator/lemmy-js-client/package.json)"
                 if [[ contents =~ $regex ]]
                 then
