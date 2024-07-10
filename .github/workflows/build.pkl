@@ -1,0 +1,65 @@
+amends "pkl/build.pkl"
+import "pkl/src/common.pkl" as common
+
+projectName = "jlemmy"
+
+local b = (import("pkl/build.pkl")) {
+    projectName = ""
+}
+
+jobs = (b.jobs) {
+    ["read-lemmy-version"] = new Job {
+        outputs = new Mapping {
+            ["lemmyVersion"] = "${{ steps.version.outputs.lemmyVersion }}"
+        }
+        steps = new Listing {
+            (common.checkout) {
+                with = new Mapping {
+                    ["fetch-depth"] = 0
+                    ["submodules"] = true
+                }
+            }
+            new CommandStep {
+                id = "version"
+                run = """
+                regex = "\\"version\\": \\"(.+)\\","
+                (cat ./type-generator/lemmy-js-client/package.json) =~ $regex
+                echo ${BASH_REMATCH[1]}
+                lemmyVersion=${BASH_REMATCH[1]} >> $GITHUB_ENV
+                """
+            }
+        }
+    }
+    ["version"] = new Job {
+        outputs = new Mapping {
+            ["version"] = "${{ steps.gitversion.outputs.semVer }}"
+            ["versionCode"] = "${{ steps.run_number.outputs.versionCode }}"
+        }
+        needs = new Listing {
+            "read-lemmy-version"
+        }
+        steps = new Listing {
+            common.checkout
+            new ActionStep {
+                name = "Install GitVersion"
+                uses = "gittools/actions/gitversion/setup@v0.9.6"
+                with = new Mapping {
+                    ["versionSpec"] = "5.x"
+                }
+            }
+            new ActionStep {
+                name = "Use GitVersion"
+                id = "gitversion"
+                uses = "gittools/actions/gitversion/execute@v0.9.6"
+                with = new Mapping {
+                    ["useConfigFile"] = true
+                    ["configFilePath"] = "./gitversion.yml"
+                }
+            }
+            new CommandStep {
+                name = "Display SemVer"
+                run = "echo \"SemVer: ${{ steps.gitversion.outputs.semVer }}\""
+            }
+        }
+    }
+}

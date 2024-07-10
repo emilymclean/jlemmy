@@ -2,7 +2,7 @@ assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
 continuous-delivery-fallback-tag: ci
-tag-prefix: (pre/)?[vV]
+tag-prefix: (pre/)?[vV]((\d+\.){2}(\d+)(-\w+\d)?)?
 commit-date-format: yyyy-MM-dd
 update-build-number: true
 branches:
