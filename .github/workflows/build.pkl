@@ -27,7 +27,7 @@ jobs = (b.jobs) {
                 if [[ $contents =~ $regex ]]
                 then
                     echo ${BASH_REMATCH[1]}
-                    lemmyVersion=${BASH_REMATCH[1]} >> $GITHUB_OUTPUT
+                    echo "lemmyVersion=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
                 else
                     echo Zoinks Scoob!
                     exit 1;
@@ -63,7 +63,7 @@ jobs = (b.jobs) {
             }
             new CommandStep {
                 id = "version"
-                run = "version=${{ needs.read-lemmy-version.outputs.lemmyVersion }}-${{ steps.gitversion.outputs.semVer }} >> $GITHUB_OUTPUT"
+                run = "echo \"version=${{ needs.read-lemmy-version.outputs.lemmyVersion }}-${{ steps.gitversion.outputs.semVer }}\" >> $GITHUB_OUTPUT"
             }
             new CommandStep {
                 name = "Display SemVer"
