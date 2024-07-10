@@ -38,8 +38,7 @@ jobs = (b.jobs) {
     }
     ["version"] = new Job {
         outputs = new Mapping {
-            ["version"] = "${{ steps.gitversion.outputs.semVer }}"
-            ["versionCode"] = "${{ steps.run_number.outputs.versionCode }}"
+            ["version"] = "${{ steps.version.outputs.version }}"
         }
         needs = new Listing {
             "read-lemmy-version"
@@ -63,8 +62,12 @@ jobs = (b.jobs) {
                 }
             }
             new CommandStep {
+                id = "version"
+                run = "version=${{ needs.read-lemmy-version.outputs.lemmyVersion }}-${{ steps.gitversion.outputs.semVer }} >> $GITHUB_ENV"
+            }
+            new CommandStep {
                 name = "Display SemVer"
-                run = "echo \"SemVer: ${{ steps.gitversion.outputs.semVer }}\""
+                run = "echo \"SemVer: ${{ needs.read-lemmy-version.outputs.lemmyVersion }}-${{ steps.gitversion.outputs.semVer }}\""
             }
         }
     }
