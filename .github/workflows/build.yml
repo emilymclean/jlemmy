@@ -15,24 +15,24 @@ jobs:
   version:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.gitversion.outputs.semVer }}
-      versionCode: ${{ steps.run_number.outputs.versionCode }}
+      version: ${{ steps.version.outputs.version }}
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.6
-      with:
-        versionSpec: 5.x
-    - id: gitversion
-      name: Use GitVersion
-      uses: gittools/actions/gitversion/execute@v0.9.6
-      with:
-        useConfigFile: true
-        configFilePath: ./gitversion.yml
-    - name: Display SemVer
-      run: 'echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"'
+        submodules: true
+    - id: version
+      run: |-
+        regex='"version": "(.*)",'
+        contents="$(cat ./type-generator/lemmy-js-client/package.json | grep "version")"
+        if [[ $contents =~ $regex ]]
+        then
+            echo ${BASH_REMATCH[1]}
+            echo "version=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+        else
+            echo Zoinks Scoob!
+            exit 1;
+        fi
   build:
     needs:
     - version
@@ -63,7 +63,7 @@ jobs:
       contents: write
     needs:
     - version
-    if: github.event_name != 'pull_request'
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main'}}
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}

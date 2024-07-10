@@ -1,0 +1,55 @@
+amends "pkl/build.pkl"
+import "pkl/src/common.pkl" as common
+
+projectName = "jlemmy"
+
+local b = (import("pkl/build.pkl")) {
+    projectName = "jlemmy"
+}
+
+jobs = (b.jobs) {
+    ["version"] = new Job {
+        outputs = new Mapping {
+            ["version"] = "${{ steps.version.outputs.version }}"
+        }
+        steps = new Listing {
+            (common.checkout) {
+                with = new Mapping {
+                    ["fetch-depth"] = 0
+                    ["submodules"] = true
+                }
+            }
+            new CommandStep {
+                id = "version"
+                run = """
+                regex='"version": "(.*)",'
+                contents="$(cat ./type-generator/lemmy-js-client/package.json | grep "version")"
+                if [[ $contents =~ $regex ]]
+                then
+                    echo ${BASH_REMATCH[1]}
+                    echo "version=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+                else
+                    echo Zoinks Scoob!
+                    exit 1;
+                fi
+                """
+            }
+        }
+    }
+    ["release"] = new Job {
+        needs = new Listing {
+            "version"
+        }
+        `if` = "${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main'}}"
+        permissions = new Mapping {
+            ["contents"] = "write"
+        }
+        outputs = new Mapping {
+            ["upload_url"] = "${{ steps.create_release.outputs.upload_url }}"
+        }
+        steps = new Listing {
+            common.checkout
+            common.create_release
+        }
+    }
+}

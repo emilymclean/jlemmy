@@ -1,9 +1,7 @@
 amends "pkl/render.pkl"
 
 workflows = new Listing {
-    (import("pkl/build.pkl")) {
-        projectName = "jlemmy"
-    }
+    import("build.pkl")
     import("pkl/test.pkl")
     import("update-types.pkl")
 }
