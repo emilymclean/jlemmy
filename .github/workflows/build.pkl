@@ -8,9 +8,9 @@ local b = (import("pkl/build.pkl")) {
 }
 
 jobs = (b.jobs) {
-    ["read-lemmy-version"] = new Job {
+    ["version"] = new Job {
         outputs = new Mapping {
-            ["lemmyVersion"] = "${{ steps.version.outputs.lemmyVersion }}"
+            ["version"] = "${{ steps.version.outputs.version }}"
         }
         steps = new Listing {
             (common.checkout) {
@@ -27,7 +27,7 @@ jobs = (b.jobs) {
                 if [[ $contents =~ $regex ]]
                 then
                     echo ${BASH_REMATCH[1]}
-                    echo "lemmyVersion=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+                    echo "version=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
                 else
                     echo Zoinks Scoob!
                     exit 1;
@@ -36,39 +36,20 @@ jobs = (b.jobs) {
             }
         }
     }
-    ["version"] = new Job {
-        outputs = new Mapping {
-            ["version"] = "${{ steps.version.outputs.version }}"
-        }
+    ["release"] = new Job {
         needs = new Listing {
-            "read-lemmy-version"
+            "version"
+        }
+        `if` = "${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main'}}"
+        permissions = new Mapping {
+            ["contents"] = "write"
+        }
+        outputs = new Mapping {
+            ["upload_url"] = "${{ steps.create_release.outputs.upload_url }}"
         }
         steps = new Listing {
             common.checkout
-            new ActionStep {
-                name = "Install GitVersion"
-                uses = "gittools/actions/gitversion/setup@v0.9.6"
-                with = new Mapping {
-                    ["versionSpec"] = "5.x"
-                }
-            }
-            new ActionStep {
-                name = "Use GitVersion"
-                id = "gitversion"
-                uses = "gittools/actions/gitversion/execute@v0.9.6"
-                with = new Mapping {
-                    ["useConfigFile"] = true
-                    ["configFilePath"] = "./gitversion.yml"
-                }
-            }
-            new CommandStep {
-                id = "version"
-                run = "echo \"version=${{ needs.read-lemmy-version.outputs.lemmyVersion }}-${{ steps.gitversion.outputs.semVer }}\" >> $GITHUB_OUTPUT"
-            }
-            new CommandStep {
-                name = "Display SemVer"
-                run = "echo \"SemVer: ${{ needs.read-lemmy-version.outputs.lemmyVersion }}-${{ steps.gitversion.outputs.semVer }}\""
-            }
+            common.create_release
         }
     }
 }

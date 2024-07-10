@@ -1,4 +1,0 @@
-amends "package://github.com/BenMMcLean/pkl-gitversion/releases/download/v0.1.1/pkl-gitversion@0.1.1#/default.pkl"
-
-// Modify to support v0.19.4-<library-version>
-`tag-prefix` = "(pre/)?[vV]((\\d+\\.){2}(\\d+)(-\\w+\\d)?)?"
