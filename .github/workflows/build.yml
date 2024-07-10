@@ -144,7 +144,7 @@ jobs:
         submodules: true
     - id: version
       run: |-
-        regex='"version": "(.+)",'
+        regex='"version": "((\d+\.){2}(\d+)(-\w+\d)?)",'
         contents="$(cat ./type-generator/lemmy-js-client/package.json)"
         if [[ $contents =~ $regex ]]
         then
