@@ -51,7 +51,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: Rename AAR
-      run: mv ./build/libs/jlemmy-${{ needs.version.outputs.version }}.jar ./jlemmy.jar
+      run: mv ./build/libs/*.jar ./jlemmy.jar
     - uses: actions/upload-artifact@v4
       with:
         name: jlemmy-jar

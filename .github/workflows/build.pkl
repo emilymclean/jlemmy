@@ -1,9 +1,9 @@
-amends "package://components.emilym.cl/actions-java/actions-java@1.0.2#/build.pkl"
-import "package://components.emilym.cl/actions-java/actions-java@1.0.2#/common/common.pkl" as common
+amends "package://components.emilym.cl/actions-java/actions-java@1.0.3#/build.pkl"
+import "package://components.emilym.cl/actions-java/actions-java@1.0.3#/common/common.pkl" as common
 
 projectName = "jlemmy"
 
-local b = (import("package://components.emilym.cl/actions-java/actions-java@1.0.2#/build.pkl")) {
+local b = (import("package://components.emilym.cl/actions-java/actions-java@1.0.3#/build.pkl")) {
     projectName = "jlemmy"
 }
 
