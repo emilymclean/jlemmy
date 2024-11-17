@@ -12,7 +12,7 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: true
@@ -21,7 +21,7 @@ jobs:
         git pull --recurse-submodules
         git submodule update --remote --recursive type-generator/lemmy-js-client
     - name: Setup python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
     - name: Install dependencies
@@ -32,7 +32,7 @@ jobs:
       name: Get current date
       run: echo "::set-output name=date::$(date +'%Y%m%d-%s')"
     - name: Create pull request
-      uses: peter-evans/create-pull-request@v6
+      uses: peter-evans/create-pull-request@v7
       with:
         branch: update-types/feature/update-types-${{ steps.date.outputs.date }}
         title: Update types from source

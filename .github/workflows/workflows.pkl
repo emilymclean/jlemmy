@@ -1,7 +1,7 @@
-amends "pkl/render.pkl"
+amends "package://components.emilym.cl/actions-java/actions-java@1.0.2#/render.pkl"
 
 workflows = new Listing {
     import("build.pkl")
-    import("pkl/test.pkl")
+    import("package://components.emilym.cl/actions-java/actions-java@1.0.2#/test.pkl")
     import("update-types.pkl")
 }

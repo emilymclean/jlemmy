@@ -1,9 +1,9 @@
-amends "pkl/build.pkl"
-import "pkl/src/common.pkl" as common
+amends "package://components.emilym.cl/actions-java/actions-java@1.0.2#/build.pkl"
+import "package://components.emilym.cl/actions-java/actions-java@1.0.2#/common/common.pkl" as common
 
 projectName = "jlemmy"
 
-local b = (import("pkl/build.pkl")) {
+local b = (import("package://components.emilym.cl/actions-java/actions-java@1.0.2#/build.pkl")) {
     projectName = "jlemmy"
 }
 
@@ -49,7 +49,7 @@ jobs = (b.jobs) {
         }
         steps = new Listing {
             common.checkout
-            common.create_release
+            ...common.create_release
         }
     }
 }

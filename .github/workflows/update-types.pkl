@@ -1,5 +1,5 @@
-extends "pkl/src/base.pkl"
-import "pkl/src/common.pkl"
+extends "package://components.emilym.cl/actions-java/actions-java@1.0.2#/common/base.pkl"
+import "package://components.emilym.cl/actions-java/actions-java@1.0.2#/common/common.pkl"
 
 name = "Update"
 
@@ -38,7 +38,7 @@ jobs = new Mapping {
             }
             new ActionStep {
                 name = "Setup python"
-                uses = "actions/setup-python@v3"
+                uses = "actions/setup-python@v5"
                 with = new Mapping {
                     ["python-version"] = "3.11"
                 }
@@ -62,7 +62,7 @@ jobs = new Mapping {
             }
             new ActionStep {
                 name = "Create pull request"
-                uses = "peter-evans/create-pull-request@v6"
+                uses = "peter-evans/create-pull-request@v7"
                 with = new Mapping {
                     ["branch"] = "update-types/feature/update-types-${{ steps.date.outputs.date }}"
                     ["title"] = "Update types from source"
